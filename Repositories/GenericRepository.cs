@@ -18,6 +18,14 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
 
       return entry.Entity;
     }
+    public async ValueTask<TEntity> CreateAsync(TEntity model)
+    {
+        var entity = await _context.Set<TEntity>().AddAsync(model);
+
+        await _context.SaveChangesAsync();
+
+        return entity.Entity;
+    }
 
     public async ValueTask AddRange(IEnumerable<TEntity> entities)
     {
@@ -29,7 +37,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     public  IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> expression)
      =>  _context.Set<TEntity>().Where(expression);
 
-    public IEnumerable<TEntity> GetAll()
+    public IQueryable<TEntity> GetAll()
       => _context.Set<TEntity>();
 
     public TEntity? GetById(int id)
