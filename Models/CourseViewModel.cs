@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Education.Models;
-public class CoureViewModel 
+public class CourseViewModel 
 {
   public int Id { get; set; }
   [Required,MaxLength(50)]

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Education.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220927184640_Migrations")]
+    [Migration("20220928191729_Migrations")]
     partial class Migrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

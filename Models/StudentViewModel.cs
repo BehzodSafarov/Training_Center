@@ -12,5 +12,5 @@ public class StudentViewModel
     [Required,MaxLength(100)]
     public string? Adress { get; set; }
     [Required]
-    public List<CoureViewModel>? CourseNames { get; set; }
+    public List<CourseViewModel>? CourseNames { get; set; }
 }

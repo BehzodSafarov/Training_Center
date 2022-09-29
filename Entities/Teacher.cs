@@ -7,6 +7,6 @@ public class Teacher : EntityBase
  public string? Adress { get; set; }
  [Required]
  public virtual List<Course>? CourseNames { get; set; }
- public EPatogs Patogs { get; set; }
+//  public EPatogs Patogs { get; set; }
  public long  Salary { get; set; }   
 }

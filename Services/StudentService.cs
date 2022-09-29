@@ -16,7 +16,7 @@ public class StudentService : IStudentService
       _unitOfWork = unitOfWork;
       _logger = logger;
     }
-    public async ValueTask<Result<Student>> CreateAsync(StudentViewModel model)
+    public async ValueTask<Result<StudentViewModel>> CreateAsync(StudentViewModel model)
     {
         if(model is null)
          return new(false);
@@ -25,7 +25,7 @@ public class StudentService : IStudentService
         {
          var createdStudent = await _unitOfWork.Student.AddAsync(Mappings.ToEntity(model));
         
-         return new(true) {Data = createdStudent};
+         return new(true) {Data = createdStudent.ToModel()};
             
         }
         catch (System.Exception e)
@@ -35,7 +35,7 @@ public class StudentService : IStudentService
         }
     }
 
-    public async ValueTask<Result<Student>> FindByName(string name)
+    public async ValueTask<Result<StudentViewModel>> FindByName(string name)
     {
         if(string.IsNullOrEmpty(name))
          return new(false);
@@ -44,7 +44,7 @@ public class StudentService : IStudentService
          {
             var student =  _unitOfWork.Student.GetAll().FirstOrDefault(x => x.Name == name);
             
-            return new(true) {Data = student};
+            return new(true) {Data = student?.ToModel()};
 
          }
          catch (System.Exception e)
@@ -54,11 +54,11 @@ public class StudentService : IStudentService
          }
     }
 
-    public async ValueTask<Result<List<Student>>> GetAllStudentsAsync()
+    public async ValueTask<Result<List<StudentViewModel>>> GetAllStudentsAsync()
     {
         try
         {
-         var students =  _unitOfWork.Student.GetAll().ToList();
+         var students =  _unitOfWork.Student.GetAll().Select(e => e.ToModel()).ToList();
          return new(true) { Data = students};
         }
         catch (System.Exception e)
@@ -69,7 +69,7 @@ public class StudentService : IStudentService
 
     }
 
-    public async ValueTask<Result<Student>> GetById(int id)
+    public async ValueTask<Result<StudentViewModel>> GetById(int id)
     {
         if(id<0)
          return new(false);
@@ -78,7 +78,7 @@ public class StudentService : IStudentService
          {
          var student = _unitOfWork.Student.GetById(id);
 
-         return new(true) {Data = student};
+         return new(true) {Data = student?.ToModel()};
             
          }
          catch (System.Exception e)
@@ -89,7 +89,7 @@ public class StudentService : IStudentService
 
     }
 
-    public async ValueTask<Result<Student>> RemoveByIdAsync(int id)
+    public async ValueTask<Result<StudentViewModel>> RemoveByIdAsync(int id)
     {
         try
         {
@@ -101,7 +101,7 @@ public class StudentService : IStudentService
         return new(false);
         }
         student = await _unitOfWork.Student.Remove(student); 
-        return new(true) {Data = student};
+        return new(true) {Data = student.ToModel()};
 
         }
         catch (System.Exception e)
@@ -111,13 +111,13 @@ public class StudentService : IStudentService
         }
     }
 
-    public async ValueTask<Result<Student>> UpdateAsync(StudentViewModel model)
+    public async ValueTask<Result<StudentViewModel>> UpdateAsync(StudentViewModel model)
     {
       try
       {
         var student = await  _unitOfWork.Student.Update(Mappings.ToEntity(model));
 
-        return new(true) {Data = student};
+        return new(true) {Data = student.ToModel()};
       }
       catch (System.Exception e)
       {
@@ -125,5 +125,6 @@ public class StudentService : IStudentService
         throw new Exception(e.Message);
       }
     }
-   
+
+
 }

@@ -4,11 +4,10 @@ using Education.Models;
 namespace Education.Services;
 public interface IStudentService
 {
- ValueTask<Result<Student>> CreateAsync(StudentViewModel model);
- ValueTask<Result<List<Student>>> GetAllStudentsAsync(); 
- ValueTask<Result<Student>> GetById(int id);
- ValueTask<Result<Student>> RemoveByIdAsync(int id);
- ValueTask<Result<Student>> UpdateAsync(StudentViewModel model);
- ValueTask<Result<Student>> FindByName(string name);
-
-}
+ ValueTask<Result<StudentViewModel>> CreateAsync(StudentViewModel model);
+ ValueTask<Result<List<StudentViewModel>>> GetAllStudentsAsync(); 
+ ValueTask<Result<StudentViewModel>> GetById(int id);
+ ValueTask<Result<StudentViewModel>> RemoveByIdAsync(int id);
+ ValueTask<Result<StudentViewModel>> UpdateAsync(StudentViewModel model);
+ ValueTask<Result<StudentViewModel>> FindByName(string name);
+ }

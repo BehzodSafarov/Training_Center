@@ -8,7 +8,7 @@ public class TeacherViewModel
  [Required,MaxLength(100)]
  public string? Adress { get; set; }
  [Required]
- public  List<CoureViewModel>? CourseNames { get; set; }
+ public  List<CourseViewModel>? CourseNames { get; set; }
  public long  Salary { get; set; }   
- public EPatogs Patogs { get; set; }
+//  public EPatogs Patogs { get; set; }
 }

@@ -4,35 +4,35 @@ using Education.Models;
 namespace Education.Mappers;
 public static class Mappings
 {
-    public static Student ToEntity(StudentViewModel model)
-     => new Student()
+    public static Student ToEntity(this StudentViewModel model)
+      => new Student()
     {
       Name = model.Name,
-      Age = model.Age,
+      Age = model.Age, 
       Adress = model.Adress,
       CourseNames = model?.CourseNames?.Select(e => ToEntityCourse(e)).ToList()
     };
 
-    public static Course ToEntityCourse(CoureViewModel model) 
+    public static Course ToEntityCourse(this CourseViewModel model) 
      => new Course()
      {
        Name = model.CourseName,
        Duration = model.Duration,
-       Price = model.Price
+       Price = model.Price 
      };
 
-     public static StudentViewModel ToModel(Student entity)
+     public static StudentViewModel ToModel(this Student entity)
       => new StudentViewModel()
       {
       Id = entity.Id,
       Name = entity.Name,
       Age = entity.Age,
       Adress = entity.Adress,
-      CourseNames = entity?.CourseNames?.Select(e => ToModelCourse(e)).ToList()
+      CourseNames = entity?.CourseNames?.Select(e => e.ToModelCourse()).ToList()
       };
      
-     public static CoureViewModel ToModelCourse(Course entity) 
-       => new CoureViewModel()
+     public static CourseViewModel ToModelCourse(this Course entity) 
+        => new CourseViewModel()
      {
        Id = entity.Id,
        CourseName = entity.Name,
@@ -40,4 +40,21 @@ public static class Mappings
        Price = entity.Price
      };
     
+    public static Teacher ToEntity(this TeacherViewModel model)
+     => new Teacher
+     {
+       Adress = model.Adress,
+       Age = model.Age,
+       Salary = model.Salary,
+       CourseNames = model?.CourseNames?.Select(e => e.ToEntityCourse()).ToList()
+     };
+
+     public static TeacherViewModel ToModel(this Teacher entity)
+     => new TeacherViewModel
+     {
+       Adress = entity.Adress,
+       Age = entity.Age,
+       Salary = entity.Salary,
+       CourseNames = entity?.CourseNames?.Select(e => e.ToModelCourse()).ToList()
+     };
 }
