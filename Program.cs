@@ -27,6 +27,7 @@ builder.Services.AddTransient<IUnitOfWork,UnitOfWork>();
 builder.Services.AddTransient<IStudentService,StudentService>();
 builder.Services.AddTransient<ICourseService,CourseService>();
 builder.Services.AddTransient<ITeacherService,TeacherService>();
+builder.Services.AddTransient<ISeedService,SeedService>();
 
 var app = builder.Build();
 

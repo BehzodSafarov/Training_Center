@@ -17,7 +17,7 @@ public class StudentController : Controller
      _service = service;
      _logger = logger;
     }
- [Authorize(Roles ="Teacherr")]
+ [Authorize(Roles ="admin")]
   public IActionResult Create() => View();
 
   [HttpPost]

@@ -1,10 +1,13 @@
 using Education.Models;
+using Education.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Education.Controllers;
 public class AccountController : Controller
 {
+    private ISeedService _seedService;
     private ILogger<AccountController> _logger;
     private UserManager<IdentityUser> _userManager;
     private SignInManager<IdentityUser> _signInManager;
@@ -12,8 +15,10 @@ public class AccountController : Controller
     public AccountController(
     ILogger<AccountController> logger,
     UserManager<IdentityUser> userManager,
+    ISeedService seedService,
     SignInManager<IdentityUser> signInManager)
     {
+      _seedService = seedService;
       _logger = logger;
       _userManager = userManager;
       _signInManager = signInManager;
@@ -64,5 +69,40 @@ public class AccountController : Controller
     }
 
     return LocalRedirect($"{model.ReturnUrl ?? "/"}"); 
+  }
+  
+  [HttpGet]
+  public IActionResult CreateRole() => View();
+
+  [HttpPost]
+  public async Task<IActionResult> CreateRole(string roleName)
+  {
+    try
+    {
+      await _seedService.InitializeRoleAsync(roleName);
+     _logger.LogInformation($"Role edded successefully");
+
+     return View();
+    }
+    catch (System.Exception)
+    {
+      _logger.LogInformation($"Role didn't added");
+      throw;
+    }
+  }
+
+  [HttpGet]
+  public IActionResult CreateUser() => View();
+  
+  [HttpPost]
+  public async Task<IActionResult> CreateUser(RoleViewModel model)
+  {
+    var existuserName = await _userManager.FindByNameAsync(model.UserName);
+    
+    if(existuserName is null)
+    {
+      await _seedService.InitializeUserAsync(model);
+    }
+    return View();
   }
 }

@@ -1,7 +1,7 @@
 using Education.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace Education;
+namespace Education; 
 public class Seed 
 {
  public static async Task InitializeRoleAsync(IApplicationBuilder app)
