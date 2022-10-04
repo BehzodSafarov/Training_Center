@@ -20,9 +20,20 @@ public class TeacherService : ITeacherService
     {
       try
       {
-        var createdTeacher = await _unitOfWork.Teacher.AddAsync(model.ToEntity());
+        var existTeacher = _unitOfWork.Teacher.GetAll().First(x => x.Name == model.Name);
+        if((existTeacher?.Adress == model.Adress &&
+         existTeacher?.Name == model.Name &&
+         existTeacher?.Age == model.Age))
+         {
+          _logger.LogInformation($"This Teacher Already exist");
+          return new("this teacher aready exist");
+         }
+         else
+         {
+          var createdTeacher = await _unitOfWork.Teacher.AddAsync(model.ToEntity());
 
-        return new(true) {Data = createdTeacher.ToModel()};
+          return new(true) {Data = createdTeacher.ToModel()};
+         }
       }
       catch (System.Exception e)
       {
@@ -44,7 +55,7 @@ public class TeacherService : ITeacherService
         catch (System.Exception e)
         {
         _logger.LogInformation($"Teacher didn't take {e.Message}");
-        throw new Exception(e.Message);
+         throw new Exception(e.Message);
         }
     }
 
@@ -78,7 +89,7 @@ public class TeacherService : ITeacherService
              existTeacher.Adress = model.Adress;
              existTeacher.Age = model.Age;
              existTeacher.CourseNames = model?.CourseNames?.Select(e => e.ToEntityCourse()).ToList();
-             existTeacher.Salary = model.Salary;
+             existTeacher.Salary = model!.Salary;
              
              var updatedTeacher = await _unitOfWork.Teacher.Update(existTeacher);
 
@@ -89,5 +100,28 @@ public class TeacherService : ITeacherService
             _logger.LogInformation($"Teacher didn't updated {e.Message}");
             throw new Exception(e.Message);
         }
+    }
+
+    public async ValueTask<Result<List<TeacherViewModel>>> GetTeachersWithPagination(int page,int limit)
+    {
+      if(page < 0 || limit < 0)
+      return new("lomit or page is minus");
+      try
+      {
+        var teachers = _unitOfWork.Teacher.GetAll();
+        
+        var filteredTeachers =
+         teachers.Skip((page-1)*limit)
+        .Take(limit)
+        .Select(x => x.ToModel())
+        .ToList();
+
+        return new(true) {Data = filteredTeachers};
+      }
+      catch (System.Exception e)
+      {
+        _logger.LogInformation($"teachers is didn't taked {e.Message}");
+        throw new Exception();
+      }
     }
 }

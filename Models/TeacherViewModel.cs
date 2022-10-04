@@ -5,6 +5,7 @@ public class TeacherViewModel
 {
  [Required]
  public int Age { get; set; }
+ public string? Name { get; set; }
  [Required,MaxLength(100)]
  public string? Adress { get; set; }
  [Required]

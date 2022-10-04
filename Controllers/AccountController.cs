@@ -63,7 +63,7 @@ public class AccountController : Controller
 
     if(!result.Succeeded)
     {
-     _logger.LogInformation($"Signin qilinmadi {result.IsNotAllowed}");
+     _logger.LogInformation($"Signing qilinmadi {result.IsNotAllowed}");
 
      return View();
     }
@@ -72,6 +72,7 @@ public class AccountController : Controller
   }
   
   [HttpGet]
+  [Authorize(Roles = "admin")]
   public IActionResult CreateRole() => View();
 
   [HttpPost]
@@ -84,14 +85,15 @@ public class AccountController : Controller
 
      return View();
     }
-    catch (System.Exception)
+    catch (System.Exception e)
     {
       _logger.LogInformation($"Role didn't added");
-      throw;
+      throw new Exception();
     }
   }
 
   [HttpGet]
+  [Authorize(Roles = "admin")]
   public IActionResult CreateUser() => View();
   
   [HttpPost]
@@ -105,4 +107,5 @@ public class AccountController : Controller
     }
     return View();
   }
+  
 }

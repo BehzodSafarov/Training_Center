@@ -43,6 +43,7 @@ public static class Mappings
     public static Teacher ToEntity(this TeacherViewModel model)
      => new Teacher
      {
+       Name = model.Name,
        Adress = model.Adress,
        Age = model.Age,
        Salary = model.Salary,
@@ -52,6 +53,7 @@ public static class Mappings
      public static TeacherViewModel ToModel(this Teacher entity)
      => new TeacherViewModel
      {
+       Name = entity.Name,
        Adress = entity.Adress,
        Age = entity.Age,
        Salary = entity.Salary,

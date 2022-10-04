@@ -23,10 +23,23 @@ public class StudentService : IStudentService
 
         try
         {
+         var existStudent = await FindByName(model?.Name);
+
+         if((existStudent?.Data?.Adress == model.Adress &&
+         existStudent?.Data?.Name == model.Name &&
+         existStudent.Data.Age == model.Age))
+         {
+         _logger.LogInformation("Bu student bor edi");
+         return new(" bu student bor edi");
+         }
+         else
+         {
+
          var createdStudent = await _unitOfWork.Student.AddAsync(Mappings.ToEntity(model));
         
          return new(true) {Data = createdStudent.ToModel()};
-            
+         }
+         
         }
         catch (System.Exception e)
         {
@@ -54,12 +67,21 @@ public class StudentService : IStudentService
          }
     }
 
-    public async ValueTask<Result<List<StudentViewModel>>> GetAllStudentsAsync()
+    public async ValueTask<Result<List<StudentViewModel>>> GetAllStudentsWithPaginationAsync(int page, int limit)
     {
         try
         {
-         var students =  _unitOfWork.Student.GetAll().Select(e => e.ToModel()).ToList();
-         return new(true) { Data = students};
+         var existStudents = _unitOfWork.Student.GetAll();
+         if(existStudents is null)
+         return new("Students not found");
+
+         var filteredStudents =  existStudents
+         .Skip((page-1)*limit)
+         .Take(limit)
+         .Select(x => x.ToModel())
+         .ToList();
+
+         return new(true) { Data = filteredStudents};
         }
         catch (System.Exception e)
         {

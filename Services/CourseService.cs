@@ -19,10 +19,19 @@ public class CourseService : ICourseService
     {
         try
         {
+           var existCourse = _unitOfWork.Cource.GetAll().First(x => x.Name == model.CourseName);
+           if(existCourse is null)
+           {
            var course  = await _unitOfWork.Cource.AddAsync(model.ToEntityCourse());
 
            return new(true) {Data = course.ToModelCourse()};
-        }
+           }
+           else
+           {
+            _logger.LogInformation("Bu Course Mavjud edi");
+            return new("This Course is exist ");
+           }
+        }  
         catch (System.Exception e)
         {
             _logger.LogInformation($"Course didn't created{e.Message}");
@@ -91,4 +100,27 @@ public class CourseService : ICourseService
             throw;
         }
     }
+    public async ValueTask<Result<List<CourseViewModel>>> GetAllCoursesWithPaginationAsync(int page, int limit)
+     {
+        if(page < 0 || limit < 0)
+         return new("Page or limit is false.");
+        try
+        {
+          var existCourse =  _unitOfWork.Cource.GetAll();
+          if(existCourse is null)
+           return new("Courses is not exist");
+
+           var filteredCourses =  existCourse.Skip((page-1)*limit)
+           .Take(limit)
+           .Select(x => x.ToModelCourse())
+           .ToList();
+
+           return new(true) {Data = filteredCourses};
+        }
+        catch (System.Exception e)
+        {
+            _logger.LogInformation($" Paginations didn't taked");
+            throw new Exception(e.Message);
+        }
+     }
 }
