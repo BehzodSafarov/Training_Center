@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Education.Controllers;
 
-[Authorize(Roles = "admin")]
+
 public class StudentController : Controller
 {
     private readonly IStudentService _service;
@@ -26,39 +26,35 @@ public class StudentController : Controller
       {
         try
         {
-        var createdstudent = await _service.CreateAsync(model); 
+          var createdstudent = await _service.CreateAsync(model); 
 
-
-        return View();
+          return View();
 
         }
         catch (System.Exception e)
         {
             _logger.LogInformation($"Student model didn't created {e.Message}");
-            throw new Exception(e.Data.ToString());
+            throw new Exception(e.Message);
         }
 
       }
       
-      [HttpGet]
-      public IActionResult Remove(string returnUrl) => View();
-
-      [HttpDelete]
       public  IActionResult Remove(int id)
       {
-        if(id < 0)
-        return BadRequest("Id manfiy bo'lishi mumkin emas");
-      try
-      {
-        var reomvedStudent = _service.RemoveByIdAsync(id);
+            if(id < 0)
+             return BadRequest("Id manfiy bo'lishi mumkin emas");
+            
+          try
+          {
+            var reomvedStudent = _service.RemoveByIdAsync(id);
 
-        return View();
-      }
-      catch (System.Exception e)
-      {
-          _logger.LogInformation($"Student didn't removed");
-          throw new Exception(e.Message);
-      }
+            return RedirectToAction(nameof(List));
+          }
+          catch (System.Exception e)
+          {
+              _logger.LogInformation($"Student didn't removed");
+              throw new Exception(e.Message);
+          }
       }
       [HttpGet]
       public IActionResult Update(string returnUrl) => View();
@@ -84,18 +80,17 @@ public class StudentController : Controller
           throw new Exception();
         }
       }
-      [HttpGet]
-      public IActionResult GetWithPaginations() => View();
 
+      [Authorize(Roles ="admin")]
       [HttpGet]
-      public async Task<IActionResult> GetWithPaginations(int page,int limit)
+      public async Task<IActionResult> List(int page=0,int limit=10)
       {
           if(page < 0 || limit < 0)
           return BadRequest("limit or page is null here");
           
         try
         {
-          var filteredStudents =  await _service.GetAllStudentsWithPaginationAsync(page,limit);
+          var filteredStudents = await _service.GetAllStudentsWithPaginationAsync(page,limit);
           _logger.LogInformation("");
           return View(filteredStudents?.Data);
         }

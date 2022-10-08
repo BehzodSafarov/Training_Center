@@ -10,7 +10,7 @@ public static class Mappings
       Name = model.Name,
       Age = model.Age, 
       Adress = model.Adress,
-      CourseNames = model?.CourseNames?.Select(e => ToEntityCourse(e)).ToList()
+      CourseNames = model?.CourseNames
     };
 
     public static Course ToEntityCourse(this CourseViewModel model) 
@@ -28,7 +28,7 @@ public static class Mappings
       Name = entity.Name,
       Age = entity.Age,
       Adress = entity.Adress,
-      CourseNames = entity?.CourseNames?.Select(e => e.ToModelCourse()).ToList()
+      CourseNames = entity?.CourseNames
       };
      
      public static CourseViewModel ToModelCourse(this Course entity) 

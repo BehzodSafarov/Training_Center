@@ -8,12 +8,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<AppDbContext>(
-    options =>
-    {
-      options.UseLazyLoadingProxies();
-      options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-    });
+builder.Services.AddDbContext<AppDbContext>(option => option.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    
 builder.Services.AddIdentity<IdentityUser,IdentityRole>(options =>
 {
     options.Password.RequiredLength = 6;

@@ -17,9 +17,7 @@ public class SeedService : ISeedService
       _roleManager = roleManager;
       _logger = logger;
 
-    }
-
-  
+    }  
     public async Task InitializeRoleAsync(string role)
     {
         try
@@ -29,6 +27,10 @@ public class SeedService : ISeedService
            var newRole  = new IdentityRole(role);
            var result = await _roleManager.CreateAsync(newRole);
             
+            foreach (var item in _roleManager.Roles)
+            {
+              System.Console.WriteLine(item);
+            }
             if(result.Succeeded)
             {
                 _logger.LogInformation($"Role created successefully{result.Succeeded}");

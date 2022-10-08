@@ -19,18 +19,21 @@ public class CourseService : ICourseService
     {
         try
         {
-           var existCourse = _unitOfWork.Cource.GetAll().First(x => x.Name == model.CourseName);
-           if(existCourse is null)
+           var exist = _unitOfWork.Cource.Find(x => x.Name == model.CourseName);
+           
+           if(exist.Count() == 0)
            {
-           var course  = await _unitOfWork.Cource.AddAsync(model.ToEntityCourse());
+                var course  = await _unitOfWork.Cource.AddAsync(model.ToEntityCourse());
 
-           return new(true) {Data = course.ToModelCourse()};
+                return new(true) {Data = course.ToModelCourse()};
            }
            else
            {
-            _logger.LogInformation("Bu Course Mavjud edi");
-            return new("This Course is exist ");
+            _logger.LogInformation($"Bu course yaratilgan");
+            return new(false);
            }
+        
+           
         }  
         catch (System.Exception e)
         {

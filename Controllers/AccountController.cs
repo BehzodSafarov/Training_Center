@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Education.Controllers;
-public class AccountController : Controller
+
+public partial class AccountController : Controller
 {
     private ISeedService _seedService;
     private ILogger<AccountController> _logger;
@@ -30,8 +31,8 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
-        var student = new IdentityUser(model.UserName);
-        var result = await _userManager.CreateAsync(student);
+        var user = new IdentityUser(model.UserName);
+        var result = await _userManager.CreateAsync(user);
 
         if(!result.Succeeded)
         {
@@ -48,7 +49,7 @@ public class AccountController : Controller
   public IActionResult Login(string returnUrl) => View(new LoginViewModel(){ReturnUrl = returnUrl});
 
   [HttpPost]
-  public async Task<IActionResult>  Login(LoginViewModel model)
+  public async Task<IActionResult> Login(LoginViewModel model)
   {
     var student = await _userManager.FindByNameAsync(model.Username);
 
@@ -56,9 +57,9 @@ public class AccountController : Controller
     {
         _logger.LogInformation($"Bu student topilmadi{model.Username}");
 
-        return View(nameof(RegisterViewModel));
+        return View(nameof(StudentViewModel));
     }
-
+    
     var result = await _signInManager.PasswordSignInAsync(student,model.Password,false,false);
 
     if(!result.Succeeded)
@@ -78,18 +79,18 @@ public class AccountController : Controller
   [HttpPost]
   public async Task<IActionResult> CreateRole(string roleName)
   {
-    try
-    {
-      await _seedService.InitializeRoleAsync(roleName);
-     _logger.LogInformation($"Role edded successefully");
+      try
+      {
+        await _seedService.InitializeRoleAsync(roleName);
+        _logger.LogInformation($"Role edded successefully");
 
-     return View();
-    }
-    catch (System.Exception e)
-    {
-      _logger.LogInformation($"Role didn't added");
-      throw new Exception();
-    }
+      return View();
+      }
+      catch (System.Exception e)
+      {
+        _logger.LogInformation($"Role didn't added");
+        throw new Exception();
+      }
   }
 
   [HttpGet]
